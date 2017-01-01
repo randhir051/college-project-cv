@@ -73,13 +73,16 @@ while True:
 	x = data.split()
 	if len(x) > 1:
 		if sk_count <= 4:
+
+			cur_per = "Person 1"
+
 			# GETTING CURRENT CO-ORDINATES
 			x_y2 = [int(x[2]),int(x[3])]
 
 			# CHECKING THE POSITION OF THE PERSON RELATIVE TO THE DOMAIN
 			pos = check_proximity(x_y2[0],x_y2[1])
 			if pos != -1 and pos != cur_pos:
-				sys.stdout.write("Person at " + domain[pos]['name']+"\n")
+				sys.stdout.write(cur_per+" at " + domain[pos]['name']+"\n")
 				cur_pos = pos
 			
 			# CALCULATING THE DIFFERENCE IN MOVEMENT AND DETERMINE THE DIRECTION
@@ -109,12 +112,12 @@ while True:
 				# PRINTING DIRECTION
 				if seq_el != ev_seq[-1] and seq_el != -1:
 					ev_seq.append(seq_el)
-					sys.stdout.write(events[seq_el]+"\n")
+					sys.stdout.write(cur_per+" direction "+events[seq_el]+"\n")
 
 				# CALCULATING PREDICTED TRAJECTORY
 				traj = trajectory(x_y2,x_ydiff)
 				if traj != (-1,-1) and traj != cur_traj:
-					sys.stdout.write("Predict : From " + domain[traj[1]]['name'] + ", towards " + domain[traj[0]]['name']+"\n")
+					sys.stdout.write(cur_per + " moving From " + domain[traj[1]]['name'] + ", towards " + domain[traj[0]]['name']+"\n")
 					cur_traj = traj
 
 				x_ydiff = [0,0]

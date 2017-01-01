@@ -62,7 +62,7 @@ class simpleapp_tk(Tkinter.Tk):
             file_to_open = "detect_walking2.py"
         cmd = "python "+ file_to_open +" "+ self.filename + " | python predict.py"
         # print cmd
-        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)        
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)        
         
         str_op = ""
         for line in proc.stdout:
@@ -78,5 +78,5 @@ class simpleapp_tk(Tkinter.Tk):
 
 if __name__ == "__main__":
     app = simpleapp_tk(None)
-    app.title('my application')
+    app.title('Computer Vision')
     app.mainloop()
