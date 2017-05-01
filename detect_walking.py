@@ -7,6 +7,8 @@ from imutils.object_detection import non_max_suppression
 from imutils import paths
 import numpy as np
 import imutils
+import sys
+import subprocess
 import cv2
 
 cap = cv2.VideoCapture("walk.mp4")
@@ -15,17 +17,16 @@ cap = cv2.VideoCapture("walk.mp4")
 hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
-target = open("output.txt", 'w')
-target.truncate()
 f_num=0
+
 while(1):
 	ret, frame = cap.read()
 	# load the image and resize it to (1) reduce detection time
 	# and (2) improve detection accuracy
 	# image = cv2.imread(imagePath)
 	#frame = imutils.resize(frame, width=min(400, frame.shape[1]))
-	if frame == None:
-		print("Finished video")
+	if frame is None:
+		# print("Finished video")
 		break
 	
 	orig = frame.copy()
@@ -46,21 +47,25 @@ while(1):
 
 	# draw the final bounding boxes
 	i=1
-	target.write(str(f_num))
+	predict_str_ip = str(f_num)
 	for (xA, yA, xB, yB) in pick:
 		cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
 		p=((xA+xB)/2, (yA+yB)/2)
 		label=" person"+str(i)
 		cv2.putText(frame, label, p, cv2.FONT_HERSHEY_PLAIN, 1.0, (0,255,0), 2);
-		target.write(label + " " + str(p[0]) + " " + str(p[1]))
+		predict_str_ip += label + " " + str(p[0]) + " " + str(p[1])
 		i+=1
-	target.write('\n')
+	predict_str_ip += '\n'
+	sys.stdout.write(predict_str_ip)
+	sys.stdout.flush()
+	# sys.stdout.flush()
 	f_num+=1
 	cv2.imshow('frame',frame)
 	k = cv2.waitKey(1) & 0xff
-	if k == 30:
+	# print (k)
+	if str(k) == 'q':
+		# print ("omgomgomgomgogm")
 		break;
 
-target.close()
 cap.release()
 cv2.destroyAllWindows()
