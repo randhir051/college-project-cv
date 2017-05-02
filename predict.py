@@ -23,6 +23,12 @@ diff_val = 4
 events = ["moving diagonally, right up","moving diagonally, left up", "moving diagonally, right down", "moving diagonally, left down", "moving right", "moving left", "moving up", "moving down","idle"]
 ev_seq = [-1]
 
+# peron's current position
+cur_pos = -1
+
+# person's current trajectory
+cur_traj = (-1,-1)
+
 def check_proximity(x,y):
 	for el in domain:
 		if (x > el['x']-10 and x < el['x']+10) and (y > el['y']-10 and y < el['y']+10):
@@ -51,8 +57,12 @@ def trajectory(p,x_y):
 		ys -= x_ydiff[1]
 		s = check_proximity(xs, ys)
 
-	if t != -1 and s != -1:
-		print " from " + domain[s]['name'] + ", to " + domain[t]['name']
+	if t != -1 and s != -1 and t!=s:
+		return (t,s)
+		
+	else:
+		return (-1,-1)
+
 
 
 while True:
@@ -63,7 +73,16 @@ while True:
 	x = data.split()
 	if len(x) > 1:
 		if sk_count <= 4:
+			# GETTING CURRENT CO-ORDINATES
 			x_y2 = [int(x[2]),int(x[3])]
+
+			# CHECKING THE POSITION OF THE PERSON RELATIVE TO THE DOMAIN
+			pos = check_proximity(x_y2[0],x_y2[1])
+			if pos != -1 and pos != cur_pos:
+				print "Person at " + domain[pos]['name']
+				cur_pos = pos
+			
+			# CALCULATING THE DIFFERENCE IN MOVEMENT AND DETERMINE THE DIRECTION
 			x_ydiff[0] +=  x_y2[0]-x_y1[0]
 			x_ydiff[1] +=  x_y2[1]-x_y1[1]
 			d_count += 1
@@ -87,15 +106,20 @@ while True:
 					seq_el = 7
 				else:
 					seq_el = -1
-				trajectory(x_y2,x_ydiff)
-				x_ydiff = [0,0]
-				d_count = 0
-
+				# PRINTING DIRECTION
 				if seq_el != ev_seq[-1] and seq_el != -1:
 					ev_seq.append(seq_el)
 					print events[seq_el]
 
+				# CALCULATING PREDICTED TRAJECTORY
+				traj = trajectory(x_y2,x_ydiff)
+				if traj != (-1,-1) and traj != cur_traj:
+					print "Predict : From " + domain[traj[1]]['name'] + ", towards " + domain[traj[0]]['name']
+					cur_traj = traj
 
+				x_ydiff = [0,0]
+				d_count = 0
+				
 			x_y1 = [int(x[2]),int(x[3])]
 			sk_count = 0
 		else:
