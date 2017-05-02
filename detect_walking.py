@@ -21,10 +21,17 @@ f_num=0
 
 while(1):
 	ret, frame = cap.read()
+	if f_num == 0:
+		sys.stdout.write(str(frame.shape[0]) + "\n")
+		sys.stdout.flush()	
+		# put max width
+		sys.stdout.write(str(frame.shape[1]) + "\n")
+		sys.stdout.flush()
 	# load the image and resize it to (1) reduce detection time
 	# and (2) improve detection accuracy
 	# image = cv2.imread(imagePath)
 	#frame = imutils.resize(frame, width=min(400, frame.shape[1]))
+	# put max height	
 	if frame is None:
 		# print("Finished video")
 		break
@@ -50,7 +57,8 @@ while(1):
 	predict_str_ip = str(f_num)
 	for (xA, yA, xB, yB) in pick:
 		cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
-		p=((xA+xB)/2, (yA+yB)/2)
+		# p=((xA+xB)/2, (yA+yB)/2)
+		p=((xA+xB)/2, 50)
 		label=" person"+str(i)
 		cv2.putText(frame, label, p, cv2.FONT_HERSHEY_PLAIN, 1.0, (0,255,0), 2);
 		predict_str_ip += label + " " + str(p[0]) + " " + str(p[1])
