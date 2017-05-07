@@ -7,11 +7,11 @@ y_max = int(sys.stdin.readline().strip())
 # get max width
 x_max = int(sys.stdin.readline().strip())
 
-print x_max, y_max
+# print x_max, y_max
 with open("mySavedDict.txt", "rb") as myFile:
     domain = pickle.load(myFile)
 
-print domain
+# print domain
 
 sk_count = 0
 x_y1 = []
