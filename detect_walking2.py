@@ -7,30 +7,43 @@ from imutils.object_detection import non_max_suppression
 from imutils import paths
 import numpy as np
 import imutils
+import sys
+import subprocess
 import cv2
 
-cap = cv2.VideoCapture("walk2.mp4")
+filename = sys.argv[1]
+cap = cv2.VideoCapture(filename)
 
 # initialize the HOG descriptor/person detector
 hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
+f_num=0
 
 while(1):
 	ret, frame = cap.read()
+	if f_num == 0:
+		sys.stdout.write(str(frame.shape[0]) + "\n")
+		sys.stdout.flush()	
+		# put max width
+		sys.stdout.write(str(frame.shape[1]) + "\n")
+		sys.stdout.flush()
 	# load the image and resize it to (1) reduce detection time
 	# and (2) improve detection accuracy
 	# image = cv2.imread(imagePath)
 	#frame = imutils.resize(frame, width=min(400, frame.shape[1]))
-	orig = frame.copy()
-
+	# put max height	
+	if frame is None:
+		# print("Finished video")
+		break
+	
 	# detect people in the image
-	(rects, weights) = hog.detectMultiScale(frame, winStride=(2, 2),
-		padding=(4, 4), scale=1.05)
+	(rects, weights) = hog.detectMultiScale(frame, winStride=(4, 4),
+		padding=(15, 15), scale=1.05)
 
 	# draw the original bounding boxes
 	for (x, y, w, h) in rects:
-		cv2.rectangle(orig, (x, y), (x + w, y + h), (0, 0, 255), 2)
+		cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
 	# apply non-maxima suppression to the bounding boxes using a
 	# fairly large overlap threshold to try to maintain overlapping
@@ -40,15 +53,17 @@ while(1):
 
 	# draw the final bounding boxes
 	i=1
+	predict_str_ip = str(f_num)
 	for (xA, yA, xB, yB) in pick:
-		cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
-		cv2.putText(frame, "person "+str(i), ((xA+xB)/2, (yA+yB)/2), cv2.FONT_HERSHEY_PLAIN, 1.0, (0,255,0), 2);
+		p=((xA+xB)/2, (yA+yB)/2)
+		label=" person"+str(i)
+		predict_str_ip += label + " " + str(p[0]) + " " + str(p[1])
 		i+=1
-
-	cv2.imshow('frame',frame)
-	k = cv2.waitKey(1) & 0xff
-	if k == 27:
-		break;
+	predict_str_ip += '\n'
+	sys.stdout.write(predict_str_ip)
+	sys.stdout.flush()
+	# sys.stdout.flush()
+	f_num+=1
 
 cap.release()
 cv2.destroyAllWindows()

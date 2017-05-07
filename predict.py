@@ -79,7 +79,7 @@ while True:
 			# CHECKING THE POSITION OF THE PERSON RELATIVE TO THE DOMAIN
 			pos = check_proximity(x_y2[0],x_y2[1])
 			if pos != -1 and pos != cur_pos:
-				print "Person at " + domain[pos]['name']
+				sys.stdout.write("Person at " + domain[pos]['name']+"\n")
 				cur_pos = pos
 			
 			# CALCULATING THE DIFFERENCE IN MOVEMENT AND DETERMINE THE DIRECTION
@@ -109,12 +109,12 @@ while True:
 				# PRINTING DIRECTION
 				if seq_el != ev_seq[-1] and seq_el != -1:
 					ev_seq.append(seq_el)
-					print events[seq_el]
+					sys.stdout.write(events[seq_el]+"\n")
 
 				# CALCULATING PREDICTED TRAJECTORY
 				traj = trajectory(x_y2,x_ydiff)
 				if traj != (-1,-1) and traj != cur_traj:
-					print "Predict : From " + domain[traj[1]]['name'] + ", towards " + domain[traj[0]]['name']
+					sys.stdout.write("Predict : From " + domain[traj[1]]['name'] + ", towards " + domain[traj[0]]['name']+"\n")
 					cur_traj = traj
 
 				x_ydiff = [0,0]
@@ -128,4 +128,6 @@ while True:
 
 	else:
 		sk_count += 1
+
+	sys.stdout.flush()
 

@@ -11,7 +11,8 @@ import sys
 import subprocess
 import cv2
 
-cap = cv2.VideoCapture("walk.mp4")
+filename = sys.argv[1]
+cap = cv2.VideoCapture(filename)
 
 # initialize the HOG descriptor/person detector
 hog = cv2.HOGDescriptor()
@@ -57,8 +58,8 @@ while(1):
 	predict_str_ip = str(f_num)
 	for (xA, yA, xB, yB) in pick:
 		cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
-		# p=((xA+xB)/2, (yA+yB)/2)
-		p=((xA+xB)/2, 50)
+		p=((xA+xB)/2, (yA+yB)/2)
+		# p=((xA+xB)/2, 50)
 		label=" person"+str(i)
 		cv2.putText(frame, label, p, cv2.FONT_HERSHEY_PLAIN, 1.0, (0,255,0), 2);
 		predict_str_ip += label + " " + str(p[0]) + " " + str(p[1])
